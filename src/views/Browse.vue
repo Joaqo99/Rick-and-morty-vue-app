@@ -1,15 +1,15 @@
 <template>
-  <div class="home">
     <Navegacion />
-  </div>
 </template>
 
 <script>
-// @ is an alias to /src
 import Navegacion from '../components/Navegacion.vue'
-
 export default {
-  name: 'Home',
-  components:{ Navegacion }
+    name: "Browse",
+    components:{ Navegacion }
 }
 </script>
+
+<style>
+
+</style>
