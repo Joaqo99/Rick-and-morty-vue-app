@@ -1,13 +1,13 @@
 <template>
-  <div id="nav">
-    
-  </div>
+  <Navegacion />
   <router-view/>
 </template>
 
 <script>
-export default {
+import Navegacion from './components/Navegacion.vue'
 
+export default {
+  components:{ Navegacion }
 }
 </script>
 

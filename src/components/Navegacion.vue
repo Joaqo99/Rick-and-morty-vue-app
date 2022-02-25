@@ -61,7 +61,7 @@ export default {
     }
 
     .logo img{
-        width: 100px;
+        width: 90px;
     }
 
     .navigation{
