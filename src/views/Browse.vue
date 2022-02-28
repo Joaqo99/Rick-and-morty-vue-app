@@ -2,16 +2,46 @@
     <div class="browse">
         <h1 class="titulo">Find your favorite Rick and Morty character, location or episode</h1>
         <div class="contenedor">
-            <input type="text" class="buscador" value="Rick Sanchez">
+            <input type="text" class="buscador" ref="myInput">
             <button class="boton-busqueda">Search</button>
         </div>
     </div>
 </template>
 
 <script>
+import { onMounted, ref } from 'vue'
+import getRandStartVal from '../composables/getRandStartVal'
+
 export default {
     name: "Browse",
+    setup(){
+        const myInput = ref(null)
 
+        onMounted(()=>{
+            const val = ref(null)
+            const error = ref(null)
+
+            const getStartVal = async ()=>{
+                let random = Math.floor(Math.random() * 861 + 1 )
+
+                try{
+                    let data = await fetch("https://rickandmortyapi.com/api/character/" + random )
+                    if(!data.ok){
+                        throw Error("No data available")
+                    }
+                    val.value = await data.json()
+                    myInput.value.value = val.value.name
+                }
+                catch(err){
+                    error.value = err.message
+                    console.log(error.value)
+                }
+            }
+
+            getStartVal()
+        })
+        return { myInput }
+    }
 }
 </script>
 
