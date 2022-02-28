@@ -9,20 +9,19 @@
 </template>
 
 <script>
-import { onMounted, ref } from 'vue'
-import getRandStartVal from '../composables/getRandStartVal'
+import { onBeforeMount, onMounted, ref } from 'vue'
 
 export default {
     name: "Browse",
     setup(){
         const myInput = ref(null)
 
-        onMounted(()=>{
+        onBeforeMount(()=>{
             const val = ref(null)
             const error = ref(null)
 
             const getStartVal = async ()=>{
-                let random = Math.floor(Math.random() * 861 + 1 )
+                let random = Math.floor(Math.random() * 826 + 1 )
 
                 try{
                     let data = await fetch("https://rickandmortyapi.com/api/character/" + random )
