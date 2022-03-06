@@ -1,24 +1,32 @@
 <template>
     <div class="browse">
-        <h1 class="titulo">Find your favorite Rick and Morty character, location or episode</h1>
+        <h1 class="titulo">Find your favorite Rick and Morty character</h1>
         <div class="contenedor">
             <input type="text" class="buscador" ref="myInput">
-            <button class="boton-busqueda">Search</button>
+            <button @click="searchClick" class="boton-busqueda">Search</button>
         </div>
+        <div class="results-container">
+            <CharCard v-for="result in searchResults" :key="result.id"  :result="result"/>
+        </div>
+        <p class="result-info">{{ searchInfo }}</p>
     </div>
 </template>
 
 <script>
-import { onBeforeMount, onMounted, ref } from 'vue'
+import { onBeforeMount, ref } from 'vue'
+import CharCard from '../components/CharCard.vue'
 
 export default {
     name: "Browse",
+    components: { CharCard },
     setup(){
         const myInput = ref(null)
+        const searchResults = ref([])
+        const error = ref(null)
+        const searchInfo = ref(null)
 
         onBeforeMount(()=>{
             const val = ref(null)
-            const error = ref(null)
 
             const getStartVal = async ()=>{
                 let random = Math.floor(Math.random() * 826 + 1 )
@@ -26,7 +34,7 @@ export default {
                 try{
                     let data = await fetch("https://rickandmortyapi.com/api/character/" + random )
                     if(!data.ok){
-                        throw Error("No data available")
+                        throw Error("Random name error")
                     }
                     val.value = await data.json()
                     myInput.value.value = val.value.name
@@ -39,7 +47,40 @@ export default {
 
             getStartVal()
         })
-        return { myInput }
+// -----------------------------------------------------------------------------
+        /*  Funcion que haga esto:
+                1) Leer lo q se escribió en el searchbar
+                2) Busque las coincidencias con "https://rickandmortyapi.com/api/character/?name=NOMBRE"
+                3) Traer esos personajes
+                4) Almacenarlos en searchResults
+
+
+                La función ya hace lo anterior, ahora queda:
+
+                1) Sacar y extraer en una nueva variable el primer item del array de resultados ya que no es un resultado como tal pero sirve la info para la paginacion
+                2) Hacer la paginación
+        */
+
+        const searchClick = async ()=>{
+            let searchRequest = myInput.value.value
+            let apiResponse
+            try{
+                let data = await fetch("https://rickandmortyapi.com/api/character/?name=" + searchRequest)
+                if(!data.ok){
+                        throw Error("No data available")
+                    }
+                apiResponse = await data.json()
+                searchInfo.value = apiResponse.info
+                searchResults.value = apiResponse.results
+            }
+            catch(err){
+                    error.value = err.message
+                    console.log(error.value)
+            }
+        }
+
+// -----------------------------------------------------------------------------
+        return { myInput, searchClick, searchResults,  searchInfo}
     }
 }
 </script>
@@ -88,5 +129,14 @@ export default {
         border: none;
         margin-left: 10px;
         cursor: pointer;
+    }
+
+    .results-container{
+        display: flex;
+        flex-wrap: wrap;
+    }
+
+    .result-info{
+        color: #0c0;
     }
 </style>
