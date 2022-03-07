@@ -132,8 +132,10 @@ export default {
     }
 
     .results-container{
+        margin: 20px;
         display: flex;
         flex-wrap: wrap;
+        justify-content: center;
     }
 
     .result-info{
